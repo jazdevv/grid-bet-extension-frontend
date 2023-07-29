@@ -1,6 +1,6 @@
 import { useState } from "react"
 import axios from "axios";
-export default function Login({setJwtCookie}){
+export default function Login({setJwtBet}){
     const [email, setEmail] = useState('test@gmail.com');
     const [password, setPassword] = useState('passw0rd');
     const [error,setError] = useState(false);
@@ -27,7 +27,7 @@ export default function Login({setJwtCookie}){
             })
             const jwtbet = data.data;
             localStorage.setItem("jwtbet",jwtbet);
-            setJwtCookie(jwtbet);
+            setJwtBet(jwtbet);
         }catch(err){
             console.log(err);
             setError(true);
