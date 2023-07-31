@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function Timer({timeLeftBet,setTimeLeftBet}){
+export default function Timer({timeLeftBet,setTimeLeftBet,gameBetDetails}){
     const secondCircle = useRef();
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export default function Timer({timeLeftBet,setTimeLeftBet}){
         }, 1000);
     
         return () => clearInterval(interval);
-      }, []);
+      }, [gameBetDetails]);
     
 
 

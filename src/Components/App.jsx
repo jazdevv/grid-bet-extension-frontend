@@ -3,11 +3,19 @@ import Header from "./Header";
 import SelectGame from "./SelectGame";
 import axios from "axios";
 import SockJsClient from 'react-stomp';
+import GameBet from "./GameBet";
 
 export default function App({jwtbet}){
     const [selectedGame,setSelectedGame] = useState(undefined);
     const [selectedGameName,SetSelectedGameName] = useState("");
     const [credits,setCredits] = useState(0);
+    const [gameBetDetails,setGameBetDetails] = useState({
+        gameBetId: 0,
+        gameId: 0,
+        option0: "",
+        option1: "",
+        round: 0
+    });
 
     async function SetCredits () {
         const data = await axios({
@@ -23,8 +31,12 @@ export default function App({jwtbet}){
         SetCredits();
     },[])
 
-    function receivedNewBetGame(gameBetId,option0,option1,round){
-
+    function receivedNewBetGame(gameBet){
+        if(gameBet.gameId != selectedGame){
+            return;
+        }
+        setGameBetDetails({...gameBet});
+        console.log(gameBet)
     }
     
     return <div className="w-full flex flex-col gap-2">
@@ -37,10 +49,10 @@ export default function App({jwtbet}){
                 console.log("Disconnected");
             }}
             onMessage={(msg) => {
-                receivedNewBetGame(msg.gameBetId,msg.option0,msg.option1,msg.round)
+                receivedNewBetGame(msg);
             }}
             />
         <Header jwtbet={jwtbet} credits={credits}/>
-        {selectedGame ? <div>selected game id is{selectedGame} with name{selectedGameName}</div> : <SelectGame setSelectedGame={setSelectedGame} SetSelectedGameName={SetSelectedGameName}/>}
+        {selectedGame ? <GameBet gameBetDetails={gameBetDetails} creditsAmount={credits}/> : <SelectGame setSelectedGame={setSelectedGame} SetSelectedGameName={SetSelectedGameName}/>}
     </div>
 }

@@ -9,7 +9,7 @@ function Main() {
     setJwtBet(jwtbetLocal);
   }
   return (
-    <div className="p-4 w-96 h-96 bg-gray-900">
+    <div className="p-4 w-96 custom-min-h-96 bg-gray-900">
       {jwtBet ? <App jwtbet={jwtBet} /> : <Login setJwtBet={setJwtBet}/>}
     </div>  
   );
