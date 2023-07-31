@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import csgoimg from './csgo.jpg';
-export default function SelectGame({setSelectedGame}){
+export default function SelectGame({setSelectedGame,SetSelectedGameName}){
     const [games,setGames] = useState([]);
 
     async function getGames(){
@@ -16,7 +16,7 @@ export default function SelectGame({setSelectedGame}){
     },[]);
     const renderedGames = games.map(el=>{
         return (
-            <div className="p-2 border-2 border-gray-800 mt-2 mr-2">
+            <div key={el.id} className="p-2 border-2 border-gray-800 mt-2 mr-2">
                 <div>
                     <img src={csgoimg}/>
                 </div>
@@ -24,7 +24,10 @@ export default function SelectGame({setSelectedGame}){
                     <div className="p-2 text-gray-400">
                         {el.name}
                     </div>
-                    <div onClick={()=>{setSelectedGame(el.id)}} className="p-2 bg-gradient rounded cursor-pointer">
+                    <div onClick={()=>{
+                        setSelectedGame(el.id)
+                        SetSelectedGameName(el.name)
+                    }} className="p-2 bg-gradient rounded cursor-pointer">
                         Bet
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 inline-block">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
