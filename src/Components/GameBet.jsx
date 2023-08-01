@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from "react"
 import Timer from "./Timer";
 import dolar from "./dolar.webp";
+import BetFinishStatusNotification from "./BetFinishStatusNotification";
 
-export default function GameBet({ gameBetDetails, creditsAmount }) {
+export default function GameBet({ gameBetDetails, creditsAmount, SetCredits, notificationStatus, setNotificationStatus }) {
     const [timeLeftBet, setTimeLeftBet] = useState(25);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
     const [succeddMsg, setSucceddMsg] = useState("");
     const [amount, setAmount] = useState(1);
     const [bettedThisRound, setBettedThisRound] = useState(false);
+    
 
     function onChangeAmount(e) {
         console.log(e.target.value.split(".").length)
@@ -35,11 +37,18 @@ export default function GameBet({ gameBetDetails, creditsAmount }) {
         }
         setBettedThisRound(true);
         let optionName;
-        if(selectedIndex==0){
+        if (selectedIndex == 0) {
             optionName = gameBetDetails.option0
-        }else{
+        } else {
             optionName = gameBetDetails.option1
         }
+        setNotificationStatus({
+            ...notificationStatus,
+            selectedIndex:selectedIndex,
+            gameBetId:gameBetDetails.gameBetId,
+            betAmount:amount,
+            title:`${gameBetDetails.option0} vs ${gameBetDetails.option1} round ${gameBetDetails.round}`
+        })
         setSucceddMsg(`Success! You have successfully placed a bet of $${amount} on ${optionName}.`)
     }
 
@@ -47,29 +56,40 @@ export default function GameBet({ gameBetDetails, creditsAmount }) {
         console.log("resetting bet time")
         setBettedThisRound(false);
         setSucceddMsg("");
-        setTimeLeftBet(25)
+        setTimeLeftBet(25);
+        SetCredits();
+        setSelectedIndex(null);
     }, [gameBetDetails]);
 
     // Calculate the angle for the circle
     //const angle = timeLeftBet === 25 ? 360 : ((25 - timeLeftBet) / 25) * 360;
 
     return (
-        <div>
+        <div className="relative">
+            {notificationStatus.open ? <BetFinishStatusNotification 
+                status={notificationStatus} 
+                setNotificationStatus={setNotificationStatus}
+                setSucceddMsg={setSucceddMsg}
+            /> : <></>}
+
             <div className="flex ">
                 <div className="flex bg-blue-700 bg-gradient2 p-2 font-bold m-auto">
-                    {`${gameBetDetails.option0} vs ${gameBetDetails.option1}`}
+                    {`${gameBetDetails.option0} vs ${gameBetDetails.option1} | round ${gameBetDetails.round}`}
                 </div>
             </div>
-            {timeLeftBet > 0 && bettedThisRound == false ? (
-                <div className="flex flex-col gap-2 pb-4">
+            {timeLeftBet > 0 && bettedThisRound == false && gameBetDetails.gameId != 0 ? (
+                <div className="flex flex-col gap-0 pb-4">
                     <div className="flex w-full justify-center">
                         <Timer timeLeftBet={timeLeftBet} setTimeLeftBet={setTimeLeftBet} gameBetDetails={gameBetDetails} />
+                    </div>
+                    <div className="px-10 text-gray-500 font-bold">
+                        Choose a team to bet for:
                     </div>
                     <div className="flex justify-between px-10 py-4  font-bold text-md">
                         {
                             selectedIndex == 0
                                 ?
-                                <div className="bg-blue-700 hover:bg-blue-700 p-2 rounded cursor-pointer">
+                                <div className="bg-gradient2 hover:bg-blue-700 p-2 rounded cursor-pointer">
                                     {gameBetDetails.option0}
                                 </div>
                                 :
@@ -82,7 +102,7 @@ export default function GameBet({ gameBetDetails, creditsAmount }) {
                         {
                             selectedIndex == 1
                                 ?
-                                <div className="bg-blue-700 hover:bg-blue-700 p-2 rounded cursor-pointer">
+                                <div className="bg-gradient2 hover:bg-blue-700 p-2 rounded cursor-pointer">
                                     {gameBetDetails.option1}
                                 </div>
                                 :
@@ -92,6 +112,9 @@ export default function GameBet({ gameBetDetails, creditsAmount }) {
                                     {gameBetDetails.option1}
                                 </div>
                         }
+                    </div>
+                    <div className="px-10 text-gray-500 font-bold pb-4">
+                        Place yout bet:
                     </div>
                     <div className="flex justify-end items-center gap-4 h-10 px-10 pb-2">
                         <div className="flex gap-1">
@@ -103,7 +126,7 @@ export default function GameBet({ gameBetDetails, creditsAmount }) {
                                 $
                             </div>
                         </div>
-                        <button onClick={onSubmit} type="button" className="p-2 w-44 h-10 bg-gradient2 rounded cursor-pointer font-bold">
+                        <button onClick={onSubmit} type="button" className="p-2 w-44 h-10 bg-blue-700 rounded cursor-pointer font-bold">
                             <span className="inline-block mr-2"> Place Bet</span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 inline-block">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -113,20 +136,20 @@ export default function GameBet({ gameBetDetails, creditsAmount }) {
                     {errorMsg.length > 0 ? <div className="px-6 py-2 bg-red-500 text-white font-bold rounded">
                         {errorMsg}
                     </div> : <></>}
-                    
+
 
                 </div>
             ) :
                 <div className="flex flex-col py-10 justify-between gap-12">
                     <div class="flex border-t-transparent border-solid animate-spin rounded-full border-blue-700 border-8 h-16 w-16 m-auto"></div>
                     <div className="p-2 bg-blue-700 font-bold self-end m-auto">
-                        Waiting for next round to start the bet
+                        Wait to the next round for start betting
                     </div>
                 </div>
             }
-            {succeddMsg.length > 0 ? <div className="px-6 py-2 bg-green-500 font-bold rounded">
-                        {succeddMsg}
-                    </div> : <></>}
+            {succeddMsg.length > 0 ? <div className="px-6 mx-6 py-4 bg-green-500 font-bold rounded">
+                {succeddMsg}
+            </div> : <></>}
         </div>
 
     );

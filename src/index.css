@@ -14,6 +14,10 @@
     color: radial-gradient(100% 100% at 53.13% 0%, #31e7fa 0%, #4477ff 52.6%, #db74ff 100%);
 }
 
+.bg-verde {
+  background-color: #09B397;
+}
+
 @layer utilities {
     .scrollbar::-webkit-scrollbar {
       width: 18px;
@@ -50,4 +54,8 @@ input[type=number] {
 
 .custom-min-h-96 {
   min-height: 24rem;
+}
+
+.h-85{
+  height: 23.5rem;
 }
