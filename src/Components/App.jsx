@@ -4,11 +4,13 @@ import SelectGame from "./SelectGame";
 import axios from "axios";
 import SockJsClient from 'react-stomp';
 import GameBet from "./GameBet";
+import UserConfig from "./UserConfig";
 
 export default function App({jwtbet}){
     const [selectedGame,setSelectedGame] = useState(undefined);
     const [selectedGameName,SetSelectedGameName] = useState("");
     const [credits,setCredits] = useState(0);
+    const [configOpen,setConfigOpen] = useState(false);
     const [notificationStatus,setNotificationStatus] = useState({
         title: "",
         open: false,
@@ -99,12 +101,15 @@ export default function App({jwtbet}){
                 receiveBetWin(msg);
             }}
             />
-        <Header jwtbet={jwtbet} credits={credits}/>
-        {selectedGame ? <GameBet 
-            SetCredits={SetCredits} 
-            gameBetDetails={gameBetDetails} 
-            creditsAmount={credits}
-            notificationStatus={notificationStatus}
-            setNotificationStatus={setNotificationStatus}/> : <SelectGame setSelectedGame={setSelectedGame} SetSelectedGameName={SetSelectedGameName}/>}
+        {configOpen ? <UserConfig jwtbet={jwtbet} setConfigOpen={setConfigOpen}/> :<>
+            <Header jwtbet={jwtbet} credits={credits} setConfigOpen={setConfigOpen}/>
+            {selectedGame ? <GameBet 
+                SetCredits={SetCredits} 
+                gameBetDetails={gameBetDetails} 
+                creditsAmount={credits}
+                notificationStatus={notificationStatus}
+                setNotificationStatus={setNotificationStatus}/> : <SelectGame setSelectedGame={setSelectedGame} SetSelectedGameName={SetSelectedGameName}/>}
+            </>
+        }
     </div>
 }
