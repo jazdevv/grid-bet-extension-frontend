@@ -59,3 +59,35 @@ input[type=number] {
 .h-85{
   height: 23.5rem;
 }
+
+.userbet{
+  border: 1px solid #222e40;
+  background-color: #0e1321;
+  border-radius: 10px;
+  padding: 1rem 0.8rem;
+}
+
+.bg-btn{
+    background-color: #172131;
+    border: 0;
+    border-radius: 5px;
+    padding: 0.6rem 1rem;
+    transition: .5s;
+    margin-bottom: 0.2rem;
+    margin-top: 0.2rem;
+    text-decoration: none;
+    display: inline-block;
+    height: fit-content;
+}
+
+.nobg-btn{
+  border: 0;
+  border-radius: 5px;
+  padding: 0.6rem 1rem;
+  transition: .5s;
+  margin-bottom: 0.2rem;
+  margin-top: 0.2rem;
+  text-decoration: none;
+  display: inline-block;
+  height: fit-content;
+}
